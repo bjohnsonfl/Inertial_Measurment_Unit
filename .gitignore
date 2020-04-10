@@ -1,0 +1,12 @@
+# exclude everything except .c .h readme and gitigore files
+/*
+!/Xmega
+/Xmega/*
+!/Xmega/IMU
+/Xmega/IMU/*
+!/Xmega/IMU/IMU
+/Xmega/IMU/IMU/*
+!/Xmega/IMU/IMU/*.c
+!/Xmega/IMU/IMU/*.h
+!*.md
+!.gitignore
