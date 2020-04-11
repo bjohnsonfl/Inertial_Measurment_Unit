@@ -14,9 +14,9 @@
 
 int main(void)
 {
-	SPIF_init();
-    PMIC_CTRL = PMIC_HILVLEN_bm;
-	sei();
+	SPIF_init();							// SPI bus on port f initialized
+    PMIC_CTRL = PMIC_HILVLEN_bm;			// enable high level interrupts
+	sei();									// turn on interrupts 
 	
 	volatile uint8_t buff = 0;
 	uint8_t data [] = {0xF5, 0x00}; // who_am_I reg, returns 0x71 01110001
