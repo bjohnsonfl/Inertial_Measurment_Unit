@@ -1,6 +1,6 @@
 /*
 * File: USART_Driver.h
-* Purpose: All functions realated to USART Communication 
+* Purpose: All functions related to USART Communication 
 */
 
 
@@ -20,9 +20,7 @@ void write_bytes_usartd0(char * data, uint8_t size);
 //Max width is 10
 void write_float_usartd0(float data, uint8_t width, uint8_t precision);
 
-ISR(USARTD0_DRE_vect){
-	USARTD0_STATUS ^= USART_DREIF_bm;   //clear the flag
-	dataRegisterEmpty = 1;				// alert that data is ready to write to
-}
+//Data ready interrupt vector
+ISR(USARTD0_DRE_vect);
 
 #endif

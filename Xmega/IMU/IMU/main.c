@@ -5,27 +5,40 @@
  * Author : Blake
  */ 
 
-#define F_CPU 2000000
+#define F_CPU 2000000UL
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
 
+
+
 #include "SPI_Driver.h"
+#include "USART_Driver.h"
 
 int main(void)
 {
-	SPIF_init();							// SPI bus on port f initialized
-    PMIC_CTRL = PMIC_HILVLEN_bm;			// enable high level interrupts
+	//SPIF_init();							// SPI bus on port f initialized
+    usartd0_init();
+	PMIC_CTRL = PMIC_HILVLEN_bm;			// enable high level interrupts
 	sei();									// turn on interrupts 
-	
+	PORTC_DIRSET = PIN0_bm;
+	PORTC_OUTCLR = PIN0_bm;
 	volatile uint8_t buff = 0;
 	uint8_t data [] = {0xF5, 0x00}; // who_am_I reg, returns 0x71 01110001
-	writeBytes(data, sizeof(data));
-	buff = SPIF_DATA;
+	//writeBytes(data, sizeof(data));
+	
+	char charData [] = "hello world";
+
     while (1) 
     {
-		//_delay_ms(2000);
-		//writeBytes(data, sizeof(data));
+			PORTC_OUTTGL = PIN0_bm;
+			write_bytes_usartd0(charData, sizeof(charData));
+			for(int i = 0; i < 10000; i++){
+				for(int j = 0; j < 100; j++){
+				//asm("nop");
+				buff = 0;
+			}
+		}
     }
 }
 
