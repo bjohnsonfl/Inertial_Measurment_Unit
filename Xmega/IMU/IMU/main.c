@@ -27,8 +27,9 @@ int main(void)
 	uint8_t data [] = {0xF5, 0x00}; // who_am_I reg, returns 0x71 01110001
 	//writeBytes(data, sizeof(data));
 	
-	char charData [] = "hello world";
-
+	char charData [] = "   hello world";
+	volatile float a = 0.0, b = 3.14, c = 0.2;
+	a = b + c;
     while (1) 
     {
 			PORTC_OUTTGL = PIN0_bm;
@@ -37,8 +38,11 @@ int main(void)
 				for(int j = 0; j < 100; j++){
 				//asm("nop");
 				buff = 0;
+				}
 			}
-		}
+			
+			write_float_usartd0(876.543);
+			
     }
 }
 

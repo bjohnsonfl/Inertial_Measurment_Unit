@@ -34,10 +34,12 @@ void write_bytes_usartd0(char * data, uint8_t size){
 
 
 //Convert a single float value into a string to be sent to the USARTD0 port
-void write_float_usartd0(float data, uint8_t width, uint8_t precision){
-	char floatBytes [10];	// buffer to store C string representation of data
+// - The variable width or precision field (an asterisk \c * symbol) is not realized and will to abort the output.
+// -Wl,-u,vfprintf -lprintf_flt -lm use these flags in linker for float capabilities
+void write_float_usartd0(float data){
+	char floatBytes [20];	// buffer to store C string representation of data
 	uint8_t size = 0;		// how large the string ends up being
-	size = sprintf(floatBytes, "%*.*f",width, precision, data);	// conversion of float to string, returns size
+	size = sprintf(floatBytes, " %3.3f ", data); 
 	write_bytes_usartd0(floatBytes, size);	//send to usartd0
 }
 
