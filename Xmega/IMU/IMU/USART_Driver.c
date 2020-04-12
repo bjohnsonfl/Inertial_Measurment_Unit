@@ -16,19 +16,22 @@ void usartd0_init(){
 	// Asych mode, Even parity, 1 stop bit, 8 bit data
 	// xmega usart only has 1 start bit, so its non-configureable
 	USARTD0_CTRLC = USART_CMODE_ASYNCHRONOUS_gc | USART_PMODE_EVEN_gc | USART_CHSIZE_8BIT_gc;
-	USARTD0_CTRLB = USART_TXEN_bm;   // Enable transmitter
-	dataRegisterEmpty = 1;				// set flag
+	USARTD0_CTRLB = USART_TXEN_bm;			 // Enable transmitter
+	dataRegisterEmpty = 1;					 // set flag
+}
+
+void write_byte_usartd0(char data){
+	while(!(USARTD0_STATUS & USART_DREIF_bm)){}		// poll for interrupt to alert data register is ready to be written to
+	USARTD0_STATUS ^= USART_DREIF_bm;				// reset the flag
+	USARTD0_DATA = data;							// write byte to data register
 }
 
 //Write size amount of bytes out the USARTD0 port
 void write_bytes_usartd0(char * data, uint8_t size){
 	volatile uint8_t i = 0;						// iterator 
-	while(i<size){						// loop through each byte to transmit
-		if(USARTD0_STATUS & USART_DREIF_bm){			// poll for interrupt to alert data register is ready to be written to
-			USARTD0_STATUS ^= USART_DREIF_bm;	// reset the flag
-			USARTD0_DATA = data[i];		// write byte to data register
-			i++;
-		}
+	while(i<size){								// loop through each byte to transmit
+		write_byte_usartd0(data[i]);			// send byte to write byte function
+		i++;									// increment to next byte
 	}
 }
 
@@ -36,11 +39,12 @@ void write_bytes_usartd0(char * data, uint8_t size){
 //Convert a single float value into a string to be sent to the USARTD0 port
 // - The variable width or precision field (an asterisk \c * symbol) is not realized and will to abort the output.
 // -Wl,-u,vfprintf -lprintf_flt -lm use these flags in linker for float capabilities
+// -Wl,-u,vfprintf -lprintf_min for minimum float capabilities
 void write_float_usartd0(float data){
-	char floatBytes [20];	// buffer to store C string representation of data
-	uint8_t size = 0;		// how large the string ends up being
-	size = sprintf(floatBytes, " %3.3f ", data); 
-	write_bytes_usartd0(floatBytes, size);	//send to usartd0
+	char floatBytes [20];							// buffer to store C string representation of data
+	uint8_t size = 0;								// how large the string ends up being
+	size = sprintf(floatBytes, " %3.3f ", data);	// convert float to c string, return size of c string
+	write_bytes_usartd0(floatBytes, size);			// send to usartd0
 }
 
 /*

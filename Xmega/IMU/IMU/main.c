@@ -30,6 +30,7 @@ int main(void)
 	char charData [] = "   hello world";
 	volatile float a = 0.0, b = 3.14, c = 0.2;
 	a = b + c;
+	char  space = 'k';
     while (1) 
     {
 			PORTC_OUTTGL = PIN0_bm;
@@ -42,6 +43,7 @@ int main(void)
 			}
 			
 			write_float_usartd0(876.543);
+			write_byte_usartd0(space);
 			
     }
 }

@@ -15,6 +15,7 @@ volatile uint8_t dataRegisterEmpty;
 
 void usartd0_init();
 
+void write_byte_usartd0(char data);
 void write_bytes_usartd0(char * data, uint8_t size);
 
 
