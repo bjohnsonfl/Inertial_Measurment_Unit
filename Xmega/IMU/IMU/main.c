@@ -28,13 +28,12 @@ int main(void)
 	
 	
 	
-	char charData [] = "   hello world";
-	volatile float a = 0.0, b = 3.14, c = 0.2;
-	a = b + c;
+	char charData [] = "hello world";
+	
 	char  space = 'k';
     while (1) 
     {
-			PORTC_OUTTGL = PIN0_bm;
+			//PORTC_OUTTGL = PIN0_bm;
 			write_bytes_usartd0(charData, sizeof(charData));
 			for(int i = 0; i < 10000; i++){
 				for(int j = 0; j < 100; j++){
@@ -42,7 +41,7 @@ int main(void)
 				}
 			}
 			
-			
+			write_byte_usartd0(space);
 			configure_MPU_9250();
     }
 }

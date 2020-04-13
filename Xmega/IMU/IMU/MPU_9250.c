@@ -27,6 +27,10 @@ void write_MPU_9250(struct command cmd){
 void configure_MPU_9250(){
 	for(int i = 0; i < 5; i++){
 		char data  [2] = {configCommandList[i].addr + 48, configCommandList[i].data + 48};
-		write_bytes_usartd0(data , 2); //48 is 0 in ascii
+		//write_bytes_usartd0(data , 2); //48 is 0 in ascii
 	}
+	uint8_t data [2] = {0xF5, 0x00};  // who am i 0x75, bit 8 needs to be 1 for read, returns 0x71
+	R_W_SPIF(data, 2);
+	write_byte_usartd0(data[1]);
+	
 }

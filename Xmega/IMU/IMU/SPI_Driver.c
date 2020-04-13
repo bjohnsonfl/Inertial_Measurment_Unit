@@ -45,13 +45,14 @@ void R_W_SPIF (uint8_t* buff, uint8_t size){
 	while(i <= size){							// loop for each byte
 		if(byteSignal == 1 && i < size){		// enter for each byte to send
 			SPIF_DATA = buff[i];				// write to the shift register 
-			buff[i] = SPIF_DATA;					// Store byte read from device
+			if(i != 0) buff[i - 1] = SPIF_DATA;	// Store byte read from device on interrupt. Skip 0 because it enters section before a byte is read
 			i++;
 			byteSignal = 0;						// unset the flag so the ISR can reset it
 		}
 		else if(byteSignal == 1 &&  i == size){	// after last byte raise the chip select to signal end of transaction
 			PORTF_OUTTGL = PIN4_bm;
 			i++;								// increment i to exit loop and function
+			buff[size - 1] = SPIF_DATA;			// store the last byte read
 		}
 	}
 }
@@ -61,6 +62,8 @@ void R_W_SPIF (uint8_t* buff, uint8_t size){
 
 ISR(SPIF_INT_vect){
 	byteSignal = 1;
+    PORTC_OUTTGL = PIN0_bm;
+	
 }
 
 

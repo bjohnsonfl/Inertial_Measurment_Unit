@@ -25,7 +25,7 @@ void R_W_SPIF (uint8_t* buff, uint8_t size);
 
 
 
-ISR(SPIF_INT_vect);
+//ISR(SPIF_INT_vect);
 
 
 #endif /* SPI_DRIVER_H */

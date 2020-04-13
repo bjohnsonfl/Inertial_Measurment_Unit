@@ -10,7 +10,7 @@ void usartd0_init(){
 	PORTD_OUTSET = PIN3_bm;					// set tx pin high for default position
 	PORTQ_DIR = 0x0A;						// sets portQ pins 1 and 3 output to enable usb switch and ftdi lines on dev board
 	PORTQ_OUTCLR = 0x0A;					// active low enables pins 1 and 3
-	USARTD0_CTRLA = USART_DREINTLVL_HI_gc;	// data register empty interrupt enable																
+	//USARTD0_CTRLA = USART_DREINTLVL_HI_gc;	// data register empty interrupt enable																
 	USARTD0_BAUDCTRLA = 0x0B;				//BSEL[7:0] = 11 0xB baud rate 115200 bps
 	USARTD0_BAUDCTRLB = 0x90;				//BSCALE = -7 0b1001, BSEL[11:8] = 0
 	// Asych mode, Even parity, 1 stop bit, 8 bit data
