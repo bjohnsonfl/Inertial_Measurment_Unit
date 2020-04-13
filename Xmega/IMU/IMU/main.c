@@ -14,18 +14,19 @@
 
 #include "SPI_Driver.h"
 #include "USART_Driver.h"
+#include "MPU_9250.h"
 
 int main(void)
 {
-	//SPIF_init();							// SPI bus on port f initialized
+	SPIF_init();							// SPI bus on port f initialized
     usartd0_init();
 	PMIC_CTRL = PMIC_HILVLEN_bm;			// enable high level interrupts
 	sei();									// turn on interrupts 
 	PORTC_DIRSET = PIN0_bm;					// led toggle for logic analyzer debugging
 	PORTC_OUTCLR = PIN0_bm;
 	volatile uint8_t buff = 0;
-	uint8_t data [] = {0xF5, 0x00}; // who_am_I reg, returns 0x71 01110001
-	//writeBytes(data, sizeof(data));
+	
+	
 	
 	char charData [] = "   hello world";
 	volatile float a = 0.0, b = 3.14, c = 0.2;
@@ -41,11 +42,8 @@ int main(void)
 				}
 			}
 			
-			write_float_usartd0(876.543);
-			write_float_usartd0(9876.5434);
-			write_float_usartd0(1.1);
-			write_byte_usartd0(space);
 			
+			configure_MPU_9250();
     }
 }
 
