@@ -21,7 +21,7 @@ int main(void)
     usartd0_init();
 	PMIC_CTRL = PMIC_HILVLEN_bm;			// enable high level interrupts
 	sei();									// turn on interrupts 
-	PORTC_DIRSET = PIN0_bm;
+	PORTC_DIRSET = PIN0_bm;					// led toggle for logic analyzer debugging
 	PORTC_OUTCLR = PIN0_bm;
 	volatile uint8_t buff = 0;
 	uint8_t data [] = {0xF5, 0x00}; // who_am_I reg, returns 0x71 01110001
@@ -37,12 +37,13 @@ int main(void)
 			write_bytes_usartd0(charData, sizeof(charData));
 			for(int i = 0; i < 10000; i++){
 				for(int j = 0; j < 100; j++){
-				//asm("nop");
 				buff = 0;
 				}
 			}
 			
 			write_float_usartd0(876.543);
+			write_float_usartd0(9876.5434);
+			write_float_usartd0(1.1);
 			write_byte_usartd0(space);
 			
     }

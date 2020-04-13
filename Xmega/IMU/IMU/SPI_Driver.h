@@ -37,6 +37,7 @@ void SPIF_init(){
 	input: array of bytes, number of bytes to send
 	purpose: Writes bytes to the SPI port, listens to ISR to send next byte
 	todo: this code blocks program flow waiting on byte to be sent, need to release function between these times
+	notes: do not need a separate "writeByte" function because there needs to be at least 2 bytes, 1 to write and 1 to read
 */
 void writeBytes (uint8_t* buff, uint8_t size){
 	uint8_t i = 0;
