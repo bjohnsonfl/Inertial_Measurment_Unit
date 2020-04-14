@@ -29,12 +29,13 @@ PWR_MGMT_1 0x6B 107:
 	dataL 0x00 -> not needed for config
 PWR_MGMT_2 0x6C 108:
 	bits 5-0 disable accelerometer and gyroscope axis if set to 1, 0 on reset, so on is default
-	data: 0x00 -> not needed for config
+	data: 0x3f ->Disable all sensors until MCU interrupt is enabled
 */
 
 const struct command configCommandList [configListSize] = {
-	{SMPLRT_DIV,9},	
+	{SMPLRT_DIV, 0xFF},	 // 9 for 100hz, 0xFF for ~ 4hz
 	{INT_PIN_CFG,0x30},
+	{PWR_MGMT_2, 0x3F},
 	{INT_ENABLE, 0x01},
 	{USER_CTRL, 0x10},
 };
@@ -45,18 +46,30 @@ void read_MPU_9250 (uint8_t addr, uint8_t bytes, uint16_t * data){
 
 void write_MPU_9250(struct command cmd){	
 	uint8_t data [2] = {cmd.addr, cmd.data};		// partition out the values from the structure to send to the SPIF port
-	R_W_SPIF(data,2)								// Write to the MPU9250 via the SPIF port
+	R_W_SPIF(data,2);								// Write to the MPU9250 via the SPIF port
 }
+
+//Turns on gyroscope and accelerometer
+void enableGyroAccel(){
+	uint8_t data [2] = {PWR_MGMT_2, 0x00};
+	R_W_SPIF(data, 2);
+}
+
+
 	
 void configure_MPU_9250(){
 
 	uint8_t data [2] = {0xF5, 0x00};				// who am i 0x75, bit 8 needs to be 1 for read, returns 0x71
-	R_W_SPIF(data, 2);
-	write_byte_usartd0(data[1]);
-	
-	for(int i = 0; i<configListSize; i++){
+	R_W_SPIF(data, 2);								// read from who am i
+	write_byte_usartd0(data[1]);					// display result on usart device
+		
+	for(int i = 0; i<configListSize; i++){			// configure registers
 		write_MPU_9250(configCommandList[i]);		// loop through each register to configure in list and write the command to it
 	}
-	
-	
+
+}
+
+
+ISR(PORTF_INT0_vect){
+	 PORTC_OUTTGL = PIN0_bm;
 }

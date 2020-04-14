@@ -24,6 +24,9 @@ void SPIF_init(){
 	SPIF_INTCTRL = SPI_INTLVL_HI_gc;
 	PORTF_DIRSET = PIN7_bm | PIN5_bm | PIN4_bm;
 	PORTF_OUTSET = PIN4_bm; // set /cs high
+	PORTF_INTCTRL = PORT_INT0LVL_LO_gc; // PORTF INTERRUPT 0 LOW PRIORITY
+	PORTF_INT0MASK = PIN2_bm;			// PIN2 SET FOR INTERRUPT 0
+	PORTF_PIN2CTRL = PORT_ISC_RISING_gc;
 	byteSignal = 1;
 	
 	
@@ -62,8 +65,6 @@ void R_W_SPIF (uint8_t* buff, uint8_t size){
 
 ISR(SPIF_INT_vect){
 	byteSignal = 1;
-    PORTC_OUTTGL = PIN0_bm;
-	
 }
 
 

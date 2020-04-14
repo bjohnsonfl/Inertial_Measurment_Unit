@@ -7,7 +7,7 @@
 
 #include <avr/interrupt.h>
 
-#define configListSize 4
+#define configListSize 5
 
 enum mpuReg {
 	SMPLRT_DIV = 0x19,
@@ -17,10 +17,15 @@ enum mpuReg {
 	
 	INT_PIN_CFG = 0x37,
 	INT_ENABLE,
+	INT_STATUS,
+	ACCEL_XOUT_H,
+	TEMP_OUT_H = 0x41,
+	GYRO_XOUT_H = 0x43,
 	
 	USER_CTRL = 0x6A,
 	PWR_MGMT_1,
-	
+	PWR_MGMT_2,
+		
 	WHO_AM_I = 0x75,				// returns 0x71
 	
 	/* ******  AK8963 Registers below ******** */	
@@ -48,6 +53,9 @@ void read_MPU_9250 (enum mpuReg addr, uint8_t bytes, uint16_t * data);
 
 // Write data to a register. 
 void write_MPU_9250(struct command cmd);
+
+// Enables on Accelerometer and Gyroscope (and eventually Magnetometer)
+void enableSensors();
 
 //initializes internal registers of the MPU_9250 for desirable behavior 
 void configure_MPU_9250();

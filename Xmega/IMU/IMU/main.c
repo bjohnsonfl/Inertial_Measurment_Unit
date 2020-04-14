@@ -20,8 +20,10 @@ int main(void)
 {
 	SPIF_init();							// SPI bus on port f initialized
     usartd0_init();
-	PMIC_CTRL = PMIC_HILVLEN_bm;			// enable high level interrupts
+	PMIC_CTRL = PMIC_HILVLEN_bm | PMIC_LOLVLEN_bm;	// enable high level interrupts
 	sei();									// turn on interrupts 
+	
+	//Debug 
 	PORTC_DIRSET = PIN0_bm;					// led toggle for logic analyzer debugging
 	PORTC_OUTCLR = PIN0_bm;
 	volatile uint8_t buff = 0;
@@ -42,7 +44,7 @@ int main(void)
 			}
 			
 			write_byte_usartd0(space);
-			configure_MPU_9250();
+			
     }
 }
 
