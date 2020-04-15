@@ -7,7 +7,7 @@
 
 #include <avr/interrupt.h>
 
-#define configListSize 5
+#define configListSize 7
 
 enum mpuReg {
 	SMPLRT_DIV = 0x19,
@@ -45,7 +45,7 @@ struct command {
 	uint8_t data;
 	};
 //A list of commands to configure the MPU_9250	
-extern const struct command configCommandList [5];
+extern const struct command configCommandList [configListSize];
 
 // Reads information from the device registers. 
 // addr is the starting register, bytes is how many registers to read from, data is to store them

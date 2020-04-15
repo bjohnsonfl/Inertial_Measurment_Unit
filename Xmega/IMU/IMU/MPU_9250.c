@@ -33,11 +33,14 @@ PWR_MGMT_2 0x6C 108:
 */
 
 const struct command configCommandList [configListSize] = {
+	{PWR_MGMT_1, 0x80},
+	{USER_CTRL, 0x10},
+	{CONFIG, 0x01},
 	{SMPLRT_DIV, 0xFF},	 // 9 for 100hz, 0xFF for ~ 4hz
-	{INT_PIN_CFG,0x30},
+	{INT_PIN_CFG,0x10}, // 0x30, debug 0x10
 	{PWR_MGMT_2, 0x3F},
 	{INT_ENABLE, 0x01},
-	{USER_CTRL, 0x10},
+	
 };
 
 void read_MPU_9250 (uint8_t addr, uint8_t bytes, uint16_t * data){
@@ -50,7 +53,7 @@ void write_MPU_9250(struct command cmd){
 }
 
 //Turns on gyroscope and accelerometer
-void enableGyroAccel(){
+void enableSensors(){
 	uint8_t data [2] = {PWR_MGMT_2, 0x00};
 	R_W_SPIF(data, 2);
 }
