@@ -1,5 +1,4 @@
 # IMU
-Early workings of an IMU/AHRS
 ## About
 An embedded program to read raw sensor data, process them via sensor fusion, and return the orientation of the device.
 
