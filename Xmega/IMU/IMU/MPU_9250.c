@@ -78,11 +78,7 @@ void enableSensors(){
 }
 
 void get_Raw_Data(){
-	/*
-	uint8_t data[2] = {0};
-	read_MPU_9250(0x80 ^( ACCEL_XOUT_H + 1), 2, data);
-	write_byte_usartd0(data[1]);
-	//*/
+	
 	uint8_t data [15] = {0x80};
 	read_MPU_9250(0x80 ^ ACCEL_XOUT_H, 15, data);	// the 0x80 is to set the read bit, Spi will read from registers ACCEL_XOUT_H to GYRO_ZOUT_L
 													//High byte is read first, shifted left one byte, and or'ed with low byte 
@@ -95,14 +91,6 @@ void get_Raw_Data(){
 	rawSensorData.xGyro = (data[ 9] << 8) | data[10];
 	rawSensorData.yGyro = (data[11] << 8) | data[12];
 	rawSensorData.zGyro = (data[13] << 8) | data[14];
-	
-	
-	
-	//write_byte_usartd0(data[4]);
-	//write_byte_usartd0(data[1]);
-	//write_byte_usartd0(data[2]);
-	write_uint16_usartd0(rawSensorData.xAccel);
-	//*/
 }
 	
 void configure_MPU_9250(){

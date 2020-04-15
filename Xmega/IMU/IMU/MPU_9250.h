@@ -37,6 +37,8 @@ enum mpuReg {
 	CNTL = 0x0A			
 	};
 	
+#define calibrationSamples 16;			// number of samples to collect before calibration
+extern volatile uint8_t sampleCount;	// used to count the first n samples for calibration purposes.
 
 
 // A structure to store the address of the register and the data to write to it  
@@ -59,6 +61,9 @@ void enableSensors();
 
 //Calls read_MPU_9250 to get sensor data and stores them in rawSensorData struct
 void get_Raw_Data();
+
+// collect n number of samples to average and store in offset registers
+void calibrateSensors(uint8_t numOfSamples);
 
 //initializes internal registers of the MPU_9250 for desirable behavior 
 void configure_MPU_9250();

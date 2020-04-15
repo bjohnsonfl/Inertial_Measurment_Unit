@@ -9,11 +9,11 @@ An Atmel Xmega 128a1u MCU communicates with a MPU 9250 inertial measturement uni
 
 - [x] SPI interface
 - [x] USART interface
-- [ ] MPU_9250 Configuration
-- [ ] MPU_9250 Read raw Accelerometer and Gyroscope data
+- [x] MPU_9250 Configuration
+- [x] MPU_9250 Read raw Accelerometer and Gyroscope data
 - [ ] MPU_9250 Configure internal I2C Master
 - [ ] MPU_9250 Read raw Magnetometer data from AK8963c via I2C Master
-- [ ] MPU_9250 Interrupt based data collection
+- [x] MPU_9250 Interrupt based data collection
 - [ ] Accelerometer and Gyroscope calibration
 - [ ] Magnetometer hard iron calibration
 - [ ] Magnetometer soft iron calibration
