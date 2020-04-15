@@ -35,6 +35,11 @@ void write_bytes_usartd0(char * data, uint8_t size){
 	}
 }
 
+void write_uint16_usartd0(uint16_t data){
+	write_byte_usartd0((char) (data >> 8));
+	write_byte_usartd0((char)(0xFF & data));
+}
+
 
 //Convert a single float value into a string to be sent to the USARTD0 port
 // - The variable width or precision field (an asterisk \c * symbol) is not realized and will to abort the output.

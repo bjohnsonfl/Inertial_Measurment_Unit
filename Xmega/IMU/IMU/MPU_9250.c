@@ -6,6 +6,24 @@
 #include "MPU_9250.h"
 #include "SPI_Driver.h"
 #include "USART_Driver.h"
+
+static struct {
+	uint16_t xAccel;
+	uint16_t yAccel;
+	uint16_t zAccel;
+	
+	uint16_t xGyro;
+	uint16_t yGyro;
+	uint16_t zGyro;
+	
+	uint16_t temp;
+	
+	uint16_t xMagnet;
+	uint16_t yMagnet;
+	uint16_t zMagnet;
+	} rawSensorData = {0};
+
+
 /*
 SMPLRT_DIV 0x19 25:
 	sampling frq = fs/(1+smplrt_div)
@@ -43,8 +61,9 @@ const struct command configCommandList [configListSize] = {
 	
 };
 
-void read_MPU_9250 (uint8_t addr, uint8_t bytes, uint16_t * data){
-	
+void read_MPU_9250 (enum mpuReg addr, uint8_t bytes, uint8_t * data){
+	data[0] = addr;
+	R_W_SPIF(data, bytes);
 }
 
 void write_MPU_9250(struct command cmd){	
@@ -58,7 +77,33 @@ void enableSensors(){
 	R_W_SPIF(data, 2);
 }
 
+void get_Raw_Data(){
+	/*
+	uint8_t data[2] = {0};
+	read_MPU_9250(0x80 ^( ACCEL_XOUT_H + 1), 2, data);
+	write_byte_usartd0(data[1]);
+	//*/
+	uint8_t data [15] = {0x80};
+	read_MPU_9250(0x80 ^ ACCEL_XOUT_H, 15, data);	// the 0x80 is to set the read bit, Spi will read from registers ACCEL_XOUT_H to GYRO_ZOUT_L
+													//High byte is read first, shifted left one byte, and or'ed with low byte 
+	rawSensorData.xAccel = (data[1] << 8) | data[2]; 
+	rawSensorData.yAccel = (data[3] << 8) | data[4];
+	rawSensorData.zAccel = (data[5] << 8) | data[6];
+	
+	rawSensorData.temp   = (data[7] << 8) | data[8];
 
+	rawSensorData.xGyro = (data[ 9] << 8) | data[10];
+	rawSensorData.yGyro = (data[11] << 8) | data[12];
+	rawSensorData.zGyro = (data[13] << 8) | data[14];
+	
+	
+	
+	//write_byte_usartd0(data[4]);
+	//write_byte_usartd0(data[1]);
+	//write_byte_usartd0(data[2]);
+	write_uint16_usartd0(rawSensorData.xAccel);
+	//*/
+}
 	
 void configure_MPU_9250(){
 
@@ -72,7 +117,8 @@ void configure_MPU_9250(){
 
 }
 
-
+// This interrupt is sourced from pin2 on port f from the imu to signal new data is ready to be read
 ISR(PORTF_INT0_vect){
-	 PORTC_OUTTGL = PIN0_bm;
+	PORTC_OUTTGL = PIN0_bm;  // debug for logic analyzer to determine fs from mpu9250
+	get_Raw_Data();
 }

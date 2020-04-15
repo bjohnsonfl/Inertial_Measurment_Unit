@@ -48,7 +48,7 @@ void R_W_SPIF (uint8_t* buff, uint8_t size){
 	while(i <= size){							// loop for each byte
 		if(byteSignal == 1 && i < size){		// enter for each byte to send
 			SPIF_DATA = buff[i];				// write to the shift register 
-			if(i != 0) buff[i - 1] = SPIF_DATA;	// Store byte read from device on interrupt. Skip 0 because it enters section before a byte is read
+			if(i != 0) buff[i - 1] = SPIF_DATA;	// Store byte read from device on every other interrupt. Skip 0 because it enters section before a byte is read
 			i++;
 			byteSignal = 0;						// unset the flag so the ISR can reset it
 		}

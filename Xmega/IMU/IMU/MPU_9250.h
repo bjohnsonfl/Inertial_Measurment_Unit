@@ -48,14 +48,17 @@ struct command {
 extern const struct command configCommandList [configListSize];
 
 // Reads information from the device registers. 
-// addr is the starting register, bytes is how many registers to read from, data is to store them
-void read_MPU_9250 (enum mpuReg addr, uint8_t bytes, uint16_t * data);
+// addr is the starting register, bytes = number of registers + 1 (to write the first byte), data is to store them
+void read_MPU_9250 (enum mpuReg addr, uint8_t bytes, uint8_t * data);
 
 // Write data to a register. 
 void write_MPU_9250(struct command cmd);
 
 // Enables on Accelerometer and Gyroscope (and eventually Magnetometer)
 void enableSensors();
+
+//Calls read_MPU_9250 to get sensor data and stores them in rawSensorData struct
+void get_Raw_Data();
 
 //initializes internal registers of the MPU_9250 for desirable behavior 
 void configure_MPU_9250();
