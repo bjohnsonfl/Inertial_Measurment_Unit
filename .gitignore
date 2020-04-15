@@ -3,8 +3,8 @@
 # !/Display_App
 !/Display_App
 /Display_App/*
-# !/Display_App/*.js
-# !/Display_App/*.json
+!/Display_App/*.js
+!/Display_App/*.json
 !/Display_App/*.html
 !/Display_App/*.css
 !/Xmega
