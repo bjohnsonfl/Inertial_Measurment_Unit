@@ -24,26 +24,29 @@ const usart = new serialPort('COM3', {baudRate : 115200 , dataBits : 8, stopBits
 const Delimiter = require('@serialport/parser-delimiter');
 const byteLength = require('@serialport/parser-byte-length');
 const parser = usart.pipe(new Delimiter({delimiter : 'n'}))
+const oneG = 16384
+const twoG = oneG *2;
+const LSBDegPerSec = 131;
+const maxDegPerSec = 250 * LSBDegPerSec;
+var count = 0;		// frame rate relative to uart sample rate
 //const parser = usart.pipe(new byteLength({length: 16}));
 parser.on('data',function(data){
-	const oneG = 16384
-	const twoG = oneG *2;
-	const LSBDegPerSec = 131;
-	const maxDegPerSec = 250;
-	console.log(data);
-	//console.log(data.readInt16BE(6), data.readInt16BE(8), data.readInt16BE(10));
-	//io.emit('data', {data: data});
-	if(data.length >= 12){
-		io.emit('data', {data: {
-			accelXraw : (data.readInt16BE(0) / twoG) * 100,
-			accelYraw : (data.readInt16BE(2) / twoG) * 100,
-			accelZraw : (data.readInt16BE(4) / twoG) * 100,
-			gyroXraw : (data.readInt16BE(6)  / maxDegPerSec / maxDegPerSec) * 100,
-			gyroYraw : (data.readInt16BE(8) / maxDegPerSec / maxDegPerSec) * 100,
-			gyroZraw : (data.readInt16BE(10) / maxDegPerSec / maxDegPerSec) * 100
-		}});
-	}
 	
+	if(count >= 0){
+		if(data.length >= 12){			// check to see if uart sent every byte 
+			
+			io.emit('data', {data: {
+				accelXraw : (data.readInt16BE(0) / twoG) * 100,
+				accelYraw : (data.readInt16BE(2) / twoG) * 100,
+				accelZraw : (data.readInt16BE(4) / twoG) * 100,
+				gyroXraw : (data.readInt16BE(6)  / maxDegPerSec) * 100,
+				gyroYraw : (data.readInt16BE(8) / maxDegPerSec) * 100,
+				gyroZraw : (data.readInt16BE(10) / maxDegPerSec) * 100,
+			}});
+			count = 0;	
+		}
+	}
+	else count += 1;
 });
 
 

@@ -97,6 +97,13 @@ body {
 
     
 }
+.label{
+	margin: 0.5;
+}
+
+.label h4, .label p{
+	margin: 0.1rem;
+}
 
 .tick{
 	z-index: 1px;

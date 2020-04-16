@@ -1,3 +1,3 @@
 ## Data Visualizer
 
-I am trying to create a better way to display data and experimenting with a node.js server express app with sockets to create a real time graph.
+A microprocessor reads sensor data that communicates via UART to a Node.js server that uses socket.io to send sensor data to the client for displayment. 
