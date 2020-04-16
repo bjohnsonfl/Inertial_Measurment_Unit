@@ -95,7 +95,7 @@ void get_Raw_Data(){
 	rawSensorData.xGyro = (data[ 9] << 8) | data[10];
 	rawSensorData.yGyro = (data[11] << 8) | data[12];
 	rawSensorData.zGyro = (data[13] << 8) | data[14];
-	//*
+	/*
 	write_byte_usartd0((char)data[1]);
 	write_byte_usartd0((char)data[2]);
 	write_byte_usartd0((char)data[3]);
@@ -114,9 +114,12 @@ void get_Raw_Data(){
 	rawSensorData.yGyro = (data[10] << 8) | data[11];
 	rawSensorData.zGyro = (data[12] << 8) | data[13];
 	*/
-	//write_uint16_usartd0(rawSensorData.xAccel);
-	//write_uint16_usartd0(rawSensorData.yAccel);
-	//write_uint16_usartd0(rawSensorData.zAccel);
+	write_uint16_usartd0(rawSensorData.xAccel);
+	write_uint16_usartd0(rawSensorData.yAccel);
+	write_uint16_usartd0(rawSensorData.zAccel);
+	write_uint16_usartd0(rawSensorData.xGyro);
+	write_uint16_usartd0(rawSensorData.yGyro);
+	write_uint16_usartd0(rawSensorData.zGyro);
 	/*
 	uint8_t accelxh [2] = {0x80 ^ ACCEL_XOUT_H, 0x3F};
 	R_W_SPIF(accelxh,2);

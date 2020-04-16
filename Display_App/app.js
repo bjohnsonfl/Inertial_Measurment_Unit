@@ -28,14 +28,21 @@ const parser = usart.pipe(new Delimiter({delimiter : 'n'}))
 parser.on('data',function(data){
 	const oneG = 16384
 	const twoG = oneG *2;
-	//console.log(data.readInt16BE(0), data.readInt16BE(2), data.readInt16BE(4));
+	const LSBDegPerSec = 131;
+	const maxDegPerSec = 250;
+	console.log(data);
+	//console.log(data.readInt16BE(6), data.readInt16BE(8), data.readInt16BE(10));
 	//io.emit('data', {data: data});
-	io.emit('data', {data: {
-		xAxis : (data.readInt16BE(0) / twoG) * 100,
-		yAxis : (data.readInt16BE(2) / twoG) * 100,
-		zAxis : (data.readInt16BE(4) / twoG) * 100
-	}});
-	
+	if(data.length >= 12){
+		io.emit('data', {data: {
+			accelXraw : (data.readInt16BE(0) / twoG) * 100,
+			accelYraw : (data.readInt16BE(2) / twoG) * 100,
+			accelZraw : (data.readInt16BE(4) / twoG) * 100,
+			gyroXraw : (data.readInt16BE(6)  / maxDegPerSec / maxDegPerSec) * 100,
+			gyroYraw : (data.readInt16BE(8) / maxDegPerSec / maxDegPerSec) * 100,
+			gyroZraw : (data.readInt16BE(10) / maxDegPerSec / maxDegPerSec) * 100
+		}});
+	}
 	
 });
 
