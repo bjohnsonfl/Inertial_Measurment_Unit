@@ -144,9 +144,6 @@ void get_Raw_Data(){
 	write_byte_usartd0((char)accelzl[1]);
 	*/
 	
-	uint8_t whoami [2] = {0xF5, 0x00};				// who am i 0x75, bit 8 needs to be 1 for read, returns 0x71
-	R_W_SPIF(whoami, 2);								// read from who am i
-	write_byte_usartd0(whoami[1]);					// display result on usart device
 	
 	
 	write_byte_usartd0('n');

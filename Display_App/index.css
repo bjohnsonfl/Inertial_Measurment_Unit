@@ -8,6 +8,7 @@ body {
   font-size: 12pt;
   color: #414545;
   max-width: 80rem;
+  height: 100vh;
   margin: 0 auto;
   overflow: scroll;
 }
@@ -22,4 +23,90 @@ body {
 
 .graphArea{
 	height: 90vh;
+	display: grid;
+	grid-template-rows: 1fr 1fr;
+	grid-template-columns: 1fr 1fr
+}
+
+#accelRaw{
+	grid-row: 1;
+	grid-column: 1;
+}
+
+#gyroRaw{
+	grid-row: 1;
+	grid-column: 2;
+}
+
+.graph{
+	height: 450px;
+	width: 500px;
+	background: #eceff1;
+	margin: 0rem;
+}
+
+.graphTitle{
+	width: 100%;
+	height: 15%;
+	display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.graphTitle h3, .graphTitle p {
+	margin: 0rem;
+}
+
+.meterArea{
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	width: 100%;
+	height: 85%;
+}
+
+.meter{
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	width: 33%;
+	height: 100%;
+}
+
+.barBorder{
+	border: 1px;
+	border-color: black;
+	border-style: solid;
+	background: red;
+	height: 100%;
+	width: 70%;
+	 border-top-right-radius: 8px;
+    border-top-left-radius: 8px;
+}
+
+.barFill{
+	bottom: 0;
+    position: relative;
+    background: red;
+    
+    width: 100%;
+    background: black;
+    border-top-right-radius: 8px;
+    border-top-left-radius: 8px;
+
+    
+}
+
+.tick{
+	z-index: 1px;
+	height: 4px;
+	width: 100%;
+	background: black;
+	display: none;
+}
+
+#neg2g{
+	position: fixed;
+	y : 100%;
 }

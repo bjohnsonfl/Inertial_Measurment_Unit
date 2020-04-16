@@ -25,8 +25,20 @@ const Delimiter = require('@serialport/parser-delimiter');
 const byteLength = require('@serialport/parser-byte-length');
 const parser = usart.pipe(new Delimiter({delimiter : 'n'}))
 //const parser = usart.pipe(new byteLength({length: 16}));
-parser.on('data', console.log);
-////////////////////////////
+parser.on('data',function(data){
+	const oneG = 16384
+	const twoG = oneG *2;
+	//console.log(data.readInt16BE(0), data.readInt16BE(2), data.readInt16BE(4));
+	//io.emit('data', {data: data});
+	io.emit('data', {data: {
+		xAxis : (data.readInt16BE(0) / twoG) * 100,
+		yAxis : (data.readInt16BE(2) / twoG) * 100,
+		zAxis : (data.readInt16BE(4) / twoG) * 100
+	}});
+	
+	
+});
+
 
 
  io.on('connection', (socket) => {

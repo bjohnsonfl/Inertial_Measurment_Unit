@@ -1,15 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 	<link rel="stylesheet" href = "index.css">
 </head>
 <body>
-	<div className = "title">
+	<div class = "title">
 		<H1>Data Visualizer</H1>	
-		<p>Socket.io fed data using serialPort.io</p>
+		<p>Socket.io fed data using serialPort.io.</p>
 	</div>
-	<div className = "graphArea">
-
+	<div class = "graphArea">
+		<div class = "graph" id = "accelRaw">
+			<div class = "graphTitle">
+				<h3>Accelerometer Raw Data</h3>
+				<p>Blue values are negative, red are positive, 0% = 0g, 50% = 1g, 100% = 2g</p>
+			</div>
+			<div class = "meterArea">	
+				<div class = "meter">
+					<div class = "barBorder" id = "accelXRawBorder">
+						<div class = "barFill" id = "accelXraw"></div>
+						<div class = "tick" id = "neg2g"></div>	
+						<div class = "tick" id = "neg1g"></div>	
+						<div class = "tick" id = "zerog"></div>	
+						<div class = "tick" id = "1g"></div>	
+						<div class = "tick" id = "2g"></div>	
+					</div>
+					<div class = "label"><h4>Accel X Raw</h4></div>
+				</div>
+				<div class = "meter">
+					<div class = "barBorder" id = "accelYRawBorder">
+						<div class = barFill id = "accelYraw"></div>	
+					</div>
+					<div class = "label"><h4>Accel Y Raw</h4></div>
+				</div>
+				<div class = "meter">
+					<div class = "barBorder" id = "accelZRawBorder">
+						<div class = barFill id = "accelZraw"></div>	
+					</div>
+					<div class = "label"><h4>Accel Z Raw</h4></div>
+				</div>
+			</div>
+		</div>
+		<div class = "graph" id = GyroRaw>
+		</div>
 		
 
 
@@ -17,5 +50,4 @@
 </body>
 
 <script src="node_modules/socket.io-client/dist/socket.io.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script type="text/javascript" src="./index.js"></script>
