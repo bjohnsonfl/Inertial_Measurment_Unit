@@ -1,0 +1,25 @@
+  
+html {
+  background: #ffffff; 
+}
+
+body {
+  font-family: 'helvetica';
+  font-size: 12pt;
+  color: #414545;
+  max-width: 80rem;
+  margin: 0 auto;
+  overflow: scroll;
+}
+
+
+.title{
+	height: 10vh;
+	align-items: left;
+	justify-content: center;
+	margin-left: : 1 rem;
+}
+
+.graphArea{
+	height: 90vh;
+}

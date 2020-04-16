@@ -32,10 +32,6 @@ int main(void)
 	configure_MPU_9250();
 	enableSensors();						// start sensors, interrupts will happen now
 	
-	
-	
-	
-	
     while (1) 
     {
 

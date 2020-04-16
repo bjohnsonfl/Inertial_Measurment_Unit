@@ -21,9 +21,11 @@ const usart = new serialPort('COM3', {baudRate : 115200 , dataBits : 8, stopBits
 	}
 });
 
+const Delimiter = require('@serialport/parser-delimiter');
 const byteLength = require('@serialport/parser-byte-length');
-const parser = usart.pipe(new byteLength({length: 16}));
-///	parser.on('data', console.log);
+const parser = usart.pipe(new Delimiter({delimiter : 'n'}))
+//const parser = usart.pipe(new byteLength({length: 16}));
+parser.on('data', console.log);
 ////////////////////////////
 
 

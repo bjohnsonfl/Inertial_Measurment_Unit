@@ -8,19 +8,19 @@
 #include "USART_Driver.h"
 
 static struct {
-	uint16_t xAccel;
-	uint16_t yAccel;
-	uint16_t zAccel;
+	int16_t xAccel;
+	int16_t yAccel;
+	int16_t zAccel;
 	
-	uint16_t xGyro;
-	uint16_t yGyro;
-	uint16_t zGyro;
+	int16_t xGyro;
+	int16_t yGyro;
+	int16_t zGyro;
 	
-	uint16_t temp;
+	int16_t temp;
 	
-	uint16_t xMagnet;
-	uint16_t yMagnet;
-	uint16_t zMagnet;
+	int16_t xMagnet;
+	int16_t yMagnet;
+	int16_t zMagnet;
 	} rawSensorData = {0};
 
 
@@ -75,6 +75,9 @@ void write_MPU_9250(struct command cmd){
 void enableSensors(){
 	uint8_t data [2] = {PWR_MGMT_2, 0x00};
 	R_W_SPIF(data, 2);
+	
+	uint8_t data1 [2] = {PWR_MGMT_1, 0x00};
+	R_W_SPIF(data1, 2);
 }
 
 void get_Raw_Data(){
@@ -82,6 +85,7 @@ void get_Raw_Data(){
 	uint8_t data [15] = {0x80};
 	read_MPU_9250(0x80 ^ ACCEL_XOUT_H, 15, data);	// the 0x80 is to set the read bit, Spi will read from registers ACCEL_XOUT_H to GYRO_ZOUT_L
 													//High byte is read first, shifted left one byte, and or'ed with low byte 
+	
 	rawSensorData.xAccel = (data[1] << 8) | data[2]; 
 	rawSensorData.yAccel = (data[3] << 8) | data[4];
 	rawSensorData.zAccel = (data[5] << 8) | data[6];
@@ -91,6 +95,65 @@ void get_Raw_Data(){
 	rawSensorData.xGyro = (data[ 9] << 8) | data[10];
 	rawSensorData.yGyro = (data[11] << 8) | data[12];
 	rawSensorData.zGyro = (data[13] << 8) | data[14];
+	//*
+	write_byte_usartd0((char)data[1]);
+	write_byte_usartd0((char)data[2]);
+	write_byte_usartd0((char)data[3]);
+	write_byte_usartd0((char)data[4]);
+	write_byte_usartd0((char)data[5]);
+	write_byte_usartd0((char)data[6]);
+	//*/
+	/*
+	rawSensorData.xAccel = (data[0] << 8) | data[1]; 
+	rawSensorData.yAccel = (data[2] << 8) | data[3];
+	rawSensorData.zAccel = (data[4] << 8) | data[5];
+	
+	rawSensorData.temp   = (data[6] << 8) | data[7];
+
+	rawSensorData.xGyro = (data[ 8] << 8) | data[ 9];
+	rawSensorData.yGyro = (data[10] << 8) | data[11];
+	rawSensorData.zGyro = (data[12] << 8) | data[13];
+	*/
+	//write_uint16_usartd0(rawSensorData.xAccel);
+	//write_uint16_usartd0(rawSensorData.yAccel);
+	//write_uint16_usartd0(rawSensorData.zAccel);
+	/*
+	uint8_t accelxh [2] = {0x80 ^ ACCEL_XOUT_H, 0x3F};
+	R_W_SPIF(accelxh,2);
+	write_byte_usartd0((char)accelxh[1]);
+	
+	uint8_t accelxl [2] = {0x80 ^ ACCEL_XOUT_L, 0x3F};
+	R_W_SPIF(accelxl,2);
+	write_byte_usartd0((char)accelxl[1]);
+	
+	uint8_t accelyh [2] = {0x80 ^ ACCEL_YOUT_H, 0xFF};
+	R_W_SPIF(accelyh,2);
+	write_byte_usartd0((char)accelyh[1]);
+	
+	uint8_t accelyl [2] = {0x80 ^ ACCEL_YOUT_L, 0xFF};
+	R_W_SPIF(accelyl,2);
+	write_byte_usartd0((char)accelyl[1]);
+	
+	
+	uint8_t accelzh [2] = {0x80 ^ ACCEL_ZOUT_H, 0x3F};
+	R_W_SPIF(accelzh,2);
+	write_byte_usartd0((char)accelzh[1]);
+	
+	uint8_t accelzl [2] = {0x80 ^ ACCEL_ZOUT_L, 0x3F};
+	R_W_SPIF(accelzl,2);
+	write_byte_usartd0((char)accelzl[1]);
+	*/
+	
+	uint8_t whoami [2] = {0xF5, 0x00};				// who am i 0x75, bit 8 needs to be 1 for read, returns 0x71
+	R_W_SPIF(whoami, 2);								// read from who am i
+	write_byte_usartd0(whoami[1]);					// display result on usart device
+	
+	
+	write_byte_usartd0('n');
+}
+
+void calibrateSensors(uint8_t numOfSamples){
+	
 }
 	
 void configure_MPU_9250(){

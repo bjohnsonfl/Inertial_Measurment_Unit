@@ -35,9 +35,9 @@ void write_bytes_usartd0(char * data, uint8_t size){
 	}
 }
 
-void write_uint16_usartd0(uint16_t data){
+void write_uint16_usartd0(int16_t data){
 	write_byte_usartd0((char) (data >> 8));
-	write_byte_usartd0((char)(0xFF & data));
+	write_byte_usartd0((char)(0x00FF & data));
 }
 
 

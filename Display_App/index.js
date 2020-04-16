@@ -4,7 +4,9 @@
 $(document).ready(function(){
 	
 	var socket = io();
-	console.log("here")
+	console.log("here");
+
+	
 });
 
 
