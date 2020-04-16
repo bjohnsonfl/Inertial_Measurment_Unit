@@ -16,7 +16,7 @@ static struct {
 	int16_t yGyro;
 	int16_t zGyro;
 	
-	int16_t temp;
+	int16_t temp;  // 333.87 LSB/degC, 21 degC offset
 	
 	int16_t xMagnet;
 	int16_t yMagnet;
@@ -91,7 +91,8 @@ void get_Raw_Data(){
 	rawSensorData.zAccel = (data[5] << 8) | data[6];
 	
 	rawSensorData.temp   = (data[7] << 8) | data[8];
-
+		//TEMP_degC = ((TEMP_OUT - RoomTemp_Offset) / Temp_Sensitivity + 21degC
+		// Temp _Sensitivity = 333.87
 	rawSensorData.xGyro = (data[ 9] << 8) | data[10];
 	rawSensorData.yGyro = (data[11] << 8) | data[12];
 	rawSensorData.zGyro = (data[13] << 8) | data[14];
@@ -120,6 +121,7 @@ void get_Raw_Data(){
 	write_uint16_usartd0(rawSensorData.xGyro);
 	write_uint16_usartd0(rawSensorData.yGyro);
 	write_uint16_usartd0(rawSensorData.zGyro);
+	write_uint16_usartd0(rawSensorData.temp);
 	/*
 	uint8_t accelxh [2] = {0x80 ^ ACCEL_XOUT_H, 0x3F};
 	R_W_SPIF(accelxh,2);

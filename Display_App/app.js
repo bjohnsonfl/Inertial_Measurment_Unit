@@ -28,13 +28,15 @@ const oneG = 16384
 const twoG = oneG *2;
 const LSBDegPerSec = 131;
 const maxDegPerSec = 250 * LSBDegPerSec;
+const tempSensitivity  = 333.87;
+const tempOffset = 21;
 var count = 0;		// frame rate relative to uart sample rate
 //const parser = usart.pipe(new byteLength({length: 16}));
 parser.on('data',function(data){
 	
 	if(count >= 0){
-		if(data.length >= 12){			// check to see if uart sent every byte 
-			
+		if(data.length >= 14){			// check to see if uart sent every byte 
+	
 			io.emit('data', {data: {
 				accelXraw : (data.readInt16BE(0) / twoG) * 100,
 				accelYraw : (data.readInt16BE(2) / twoG) * 100,
@@ -42,6 +44,7 @@ parser.on('data',function(data){
 				gyroXraw : (data.readInt16BE(6)  / maxDegPerSec) * 100,
 				gyroYraw : (data.readInt16BE(8) / maxDegPerSec) * 100,
 				gyroZraw : (data.readInt16BE(10) / maxDegPerSec) * 100,
+				tempRaw : (data.readInt16BE(12)),
 			}});
 			count = 0;	
 		}

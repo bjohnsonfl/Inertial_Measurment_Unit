@@ -5,6 +5,7 @@ $(document).ready(function(){
 	socket.on('data', function(req){
 		updateAccelRaw(req);
 		updateGyroRaw(req);
+		updateTemp(req);
 	})
 	
 
@@ -101,6 +102,36 @@ function updateGyroRaw(req){
 	});
 	}else{
 		$("#gyroZRawBorder").css({
+		"background": "red",
+	});}
+}
+
+const tempSensitivity  = 333.87;
+const tempOffset = 21;
+const celsiusRange = 50;
+
+
+function updateTemp(req){
+	var celsius = req.data.tempRaw / tempSensitivity + tempOffset;
+	var fahrenheit = celsius * (9/5) + 32;
+	var celsiusPercent = Math.round(Math.abs(((celsius / celsiusRange) * 100)));
+	celsius = Math.round(celsius * 1000) / 1000;
+	fahrenheit = Math.round(fahrenheit * 1000) / 1000;
+	console.log(celsiusPercent);
+
+	$("#CelsiusVal").html(celsius + " C");
+	$("#FahrenheitVal").html(fahrenheit + " F");
+
+	$("#tempRaw").css({
+		"height": celsiusPercent + "%",
+	});
+
+	if(celsius < 0){
+	$("#tempRawBorder").css({
+	"background": "blue",
+	});
+	}else{
+		$("#tempRawBorder").css({
 		"background": "red",
 	});}
 }
