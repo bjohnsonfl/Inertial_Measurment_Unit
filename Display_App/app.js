@@ -33,8 +33,8 @@ const tempOffset = 21;
 var count = 0;		// frame rate relative to uart sample rate
 //const parser = usart.pipe(new byteLength({length: 16}));
 parser.on('data',function(data){
-	
-	if(count >= 0){
+	console.log(data);
+	if(count >= 25){
 		if(data.length >= 14){			// check to see if uart sent every byte 
 	
 			io.emit('data', {data: {

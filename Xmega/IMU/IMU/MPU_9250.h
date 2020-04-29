@@ -8,6 +8,10 @@
 #include <avr/interrupt.h>
 
 #define configListSize 7
+#define calibrationSamples 16
+#define calibrateShift 4			//number of bits of numOfConfigSamples
+extern volatile uint8_t sampleCount;	// used to count the first n samples for calibration purposes.
+extern volatile uint8_t newData;
 
 enum mpuReg {
 	SMPLRT_DIV = 0x19,
@@ -32,6 +36,13 @@ enum mpuReg {
 	PWR_MGMT_2,
 		
 	WHO_AM_I = 0x75,				// returns 0x71
+	XA_OFFSET_H = 0x77,
+	XA_OFFSET_L,
+	YA_OFFSET_H = 0x7A,
+	YA_OFFSET_L,
+	ZA_OFFSET_H = 0x7D,
+	ZA_OFFSET_L,
+	
 	
 	/* ******  AK8963 Registers below ******** */	
 	WIA = 0x00,
@@ -42,8 +53,6 @@ enum mpuReg {
 	CNTL = 0x0A			
 	};
 	
-#define calibrationSamples 16;			// number of samples to collect before calibration
-extern volatile uint8_t sampleCount;	// used to count the first n samples for calibration purposes.
 
 
 // A structure to store the address of the register and the data to write to it  
@@ -64,11 +73,14 @@ void write_MPU_9250(struct command cmd);
 // Enables on Accelerometer and Gyroscope (and eventually Magnetometer)
 void enableSensors();
 
-//Calls read_MPU_9250 to get sensor data and stores them in rawSensorData struct
+// Calls read_MPU_9250 to get sensor data and stores them in rawSensorData struct
 void get_Raw_Data();
 
+// Transmits all data from raw data struct via USART to external device
+void send_Raw_Data();
+
 // collect n number of samples to average and store in offset registers
-void calibrateSensors(uint8_t numOfSamples);
+void calibrateSensors();
 
 //initializes internal registers of the MPU_9250 for desirable behavior 
 void configure_MPU_9250();

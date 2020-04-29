@@ -23,6 +23,8 @@ static struct {
 	int16_t zMagnet;
 	} rawSensorData = {0};
 
+volatile uint8_t newData = 0;
+volatile uint8_t sampleCount = 0;
 
 /*
 SMPLRT_DIV 0x19 25:
@@ -85,36 +87,21 @@ void get_Raw_Data(){
 	uint8_t data [15] = {0x80};
 	read_MPU_9250(0x80 ^ ACCEL_XOUT_H, 15, data);	// the 0x80 is to set the read bit, Spi will read from registers ACCEL_XOUT_H to GYRO_ZOUT_L
 													//High byte is read first, shifted left one byte, and or'ed with low byte 
-	
-	rawSensorData.xAccel = (data[1] << 8) | data[2]; 
+	rawSensorData.xAccel = ((int16_t)data[1] << 8) | data[2]; 
 	rawSensorData.yAccel = (data[3] << 8) | data[4];
 	rawSensorData.zAccel = (data[5] << 8) | data[6];
 	
 	rawSensorData.temp   = (data[7] << 8) | data[8];
-		//TEMP_degC = ((TEMP_OUT - RoomTemp_Offset) / Temp_Sensitivity + 21degC
+		// TEMP_degC = ((TEMP_OUT - RoomTemp_Offset) / Temp_Sensitivity + 21degC
 		// Temp _Sensitivity = 333.87
 	rawSensorData.xGyro = (data[ 9] << 8) | data[10];
 	rawSensorData.yGyro = (data[11] << 8) | data[12];
 	rawSensorData.zGyro = (data[13] << 8) | data[14];
-	/*
-	write_byte_usartd0((char)data[1]);
-	write_byte_usartd0((char)data[2]);
-	write_byte_usartd0((char)data[3]);
-	write_byte_usartd0((char)data[4]);
-	write_byte_usartd0((char)data[5]);
-	write_byte_usartd0((char)data[6]);
-	//*/
-	/*
-	rawSensorData.xAccel = (data[0] << 8) | data[1]; 
-	rawSensorData.yAccel = (data[2] << 8) | data[3];
-	rawSensorData.zAccel = (data[4] << 8) | data[5];
-	
-	rawSensorData.temp   = (data[6] << 8) | data[7];
 
-	rawSensorData.xGyro = (data[ 8] << 8) | data[ 9];
-	rawSensorData.yGyro = (data[10] << 8) | data[11];
-	rawSensorData.zGyro = (data[12] << 8) | data[13];
-	*/
+	
+}
+
+void send_Raw_Data(){
 	write_uint16_usartd0(rawSensorData.xAccel);
 	write_uint16_usartd0(rawSensorData.yAccel);
 	write_uint16_usartd0(rawSensorData.zAccel);
@@ -122,40 +109,74 @@ void get_Raw_Data(){
 	write_uint16_usartd0(rawSensorData.yGyro);
 	write_uint16_usartd0(rawSensorData.zGyro);
 	write_uint16_usartd0(rawSensorData.temp);
-	/*
-	uint8_t accelxh [2] = {0x80 ^ ACCEL_XOUT_H, 0x3F};
-	R_W_SPIF(accelxh,2);
-	write_byte_usartd0((char)accelxh[1]);
-	
-	uint8_t accelxl [2] = {0x80 ^ ACCEL_XOUT_L, 0x3F};
-	R_W_SPIF(accelxl,2);
-	write_byte_usartd0((char)accelxl[1]);
-	
-	uint8_t accelyh [2] = {0x80 ^ ACCEL_YOUT_H, 0xFF};
-	R_W_SPIF(accelyh,2);
-	write_byte_usartd0((char)accelyh[1]);
-	
-	uint8_t accelyl [2] = {0x80 ^ ACCEL_YOUT_L, 0xFF};
-	R_W_SPIF(accelyl,2);
-	write_byte_usartd0((char)accelyl[1]);
-	
-	
-	uint8_t accelzh [2] = {0x80 ^ ACCEL_ZOUT_H, 0x3F};
-	R_W_SPIF(accelzh,2);
-	write_byte_usartd0((char)accelzh[1]);
-	
-	uint8_t accelzl [2] = {0x80 ^ ACCEL_ZOUT_L, 0x3F};
-	R_W_SPIF(accelzl,2);
-	write_byte_usartd0((char)accelzl[1]);
-	*/
-	
-	
-	
 	write_byte_usartd0('n');
+	newData = 0;
 }
 
-void calibrateSensors(uint8_t numOfSamples){
+void calibrateSensors(){
+	newData = 0;									// reset the flag to not enter the if statement initially
+	uint8_t numOfSamples = 0;						// reset the sample counter if this is function is being called again
+	int32_t xAccelAvg = 0;							// Accumulators for each axis of each sensor
+	int32_t yAccelAvg = 0;
+	int32_t zAccelAvg = 0;
+	int32_t xGyroAvg = 0;
+	int32_t yGyroAvg = 0;
+	int32_t zGyroAvg = 0;
+	uint8_t accelShift = 0, gyroShift = 0;			// shift amounts for LSB/g conversion and averaging
+	struct command accelOffset [6];						// address and offset data, 2 commands per axis (high and low byte)
+	struct command gyroOffset [6] ;
 	
+	
+	while(numOfSamples < calibrationSamples){		// take n number of samples and sum them up
+		if(newData == 1){							// wait on the interrupt
+			newData = 0;							// reset flag
+			numOfSamples += 1;						// increment number of interrupt/samples that have occurred
+			
+			xAccelAvg += rawSensorData.xAccel;		// used fixed point math to accumulate a summation of values to be averaged
+			yAccelAvg += rawSensorData.yAccel;
+			zAccelAvg += rawSensorData.zAccel;
+			xGyroAvg += rawSensorData.xGyro;
+			yGyroAvg += rawSensorData.yGyro;
+			zGyroAvg += rawSensorData.zGyro;
+			write_uint16_usartd0(rawSensorData.xAccel);
+			write_uint16_usartd0(xAccelAvg >> 16);
+			write_uint16_usartd0(xAccelAvg & 0xFFFF);
+			write_byte_usartd0('n');
+		}
+	}
+	
+	// take the average by dividing by the number of samples
+	// The number of samples is a multiple of 2, so a shift right works
+	// The Offset registers are +-16 G and have different sizes
+	// this requires shifting the offsets to that LSB/g scale
+	// The accelerometer +- 16g mode has a 2048 LSB/g scale, but the offset is 15 bits, so you need to shift right 1
+	// This means the accel_offset has a 1024 LSB/g scale. +-2g mode has 16,384 LSB/g (2^14) 
+	// To align the scales, the offset needs to be shifted 4 to the right to reach 2^10 LSB/g
+	// The average is divide by the number of samples, which is a power of two, which is another shift right
+	accelShift = 4 + calibrateShift;					
+	xAccelAvg = xAccelAvg >> accelShift;			// 4 bits for LSB/g and configShift for average
+	
+	accelOffset[0].addr = XA_OFFSET_H;
+	accelOffset[0].data = (uint8_t)((xAccelAvg >> 7) & 0xFF);		// [14:7]
+	accelOffset[1].addr = XA_OFFSET_L;
+	accelOffset[1].data = ((uint8_t)xAccelAvg & 0x3F) << 1;		// [6:0] [x]
+	
+	
+		write_uint16_usartd0(rawSensorData.xAccel);
+		write_uint16_usartd0(xAccelAvg >> 16);
+		write_uint16_usartd0(xAccelAvg & 0xFFFF);
+		write_byte_usartd0(accelOffset[0].data);
+		write_byte_usartd0(accelOffset[1].data);
+		write_byte_usartd0('n');
+	
+	while(1) {}
+	
+	
+	write_MPU_9250(accelOffset[0]);
+	write_MPU_9250(accelOffset[1]);
+		
+													
+							
 }
 	
 void configure_MPU_9250(){
@@ -172,6 +193,6 @@ void configure_MPU_9250(){
 
 // This interrupt is sourced from pin2 on port f from the imu to signal new data is ready to be read
 ISR(PORTF_INT0_vect){
-	PORTC_OUTTGL = PIN0_bm;  // debug for logic analyzer to determine fs from mpu9250
 	get_Raw_Data();
+	newData = 1;
 }

@@ -117,7 +117,7 @@ function updateTemp(req){
 	var celsiusPercent = Math.round(Math.abs(((celsius / celsiusRange) * 100)));
 	celsius = Math.round(celsius * 1000) / 1000;
 	fahrenheit = Math.round(fahrenheit * 1000) / 1000;
-	console.log(celsiusPercent);
+	
 
 	$("#CelsiusVal").html(celsius + " C");
 	$("#FahrenheitVal").html(fahrenheit + " F");

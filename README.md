@@ -1,4 +1,5 @@
 # IMU
+You can read about this project on my website [here.](https://blakejohnsonuf.com/project/#IMU)
 ## About
 An embedded program to read raw sensor data, process them via sensor fusion, and return the orientation of the device.
 
@@ -22,6 +23,6 @@ The displayment of data will be done with a Node.js Express app that uses Serial
 - [ ] Magnetometer soft iron calibration
 
 The next three overlap but follow the general progression
-- [ ] Accelerometer + Gyroscope Sensor Fusion
+- [x] Accelerometer + Gyroscope Sensor Fusion
 - [ ] Accelerometer + Gyroscope + Magnetometer Sensor fusion
 - [ ] [Madgwick Filter](https://courses.cs.washington.edu/courses/cse474/17wi/labs/l4/madgwick_internal_report.pdf) (Quaternion based) 

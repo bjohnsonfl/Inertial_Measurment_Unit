@@ -31,12 +31,12 @@ int main(void)
 	_delay_ms(40);							// wait for sensors to start up before configuring
 	configure_MPU_9250();
 	enableSensors();						// start sensors, interrupts will happen now
-	
+	calibrateSensors();
     while (1) 
     {
-
-			
-			poorlyDoneDelay();		// simulate processing delay
+			PORTC_OUTTGL = PIN0_bm;  // debug for logic analyzer to determine fs from mpu9250
+			if(newData == 1) send_Raw_Data();
+			//poorlyDoneDelay();		// simulate processing delay
 			
 			
     }
@@ -44,7 +44,7 @@ int main(void)
 
 void poorlyDoneDelay(){
 	volatile uint8_t buff = 0;
-	for(int i = 0; i < 10000; i++){
+	for(int i = 0; i < 100; i++){
 		for(int j = 0; j < 100; j++){
 			buff = 0;
 		}
