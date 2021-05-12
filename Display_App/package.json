@@ -9,7 +9,7 @@
   "author": "Blake Johnson",
   "license": "ISC",
   "dependencies": {
-    "chart.js": "^2.9.3",
+    "chart.js": "^2.9.4",
     "express": "^4.17.1",
     "nodemon": "^2.0.3",
     "serialport": "^8.0.7",
